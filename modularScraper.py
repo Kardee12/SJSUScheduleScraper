@@ -20,6 +20,7 @@ class CourseScheduleEntry(BaseModel):
     days: str
     times: str
     instructor: str
+    instructorEmail: str
     location: str
     dates: str
     open_seats: int
@@ -74,7 +75,14 @@ class SJSUScraper:
             class_type = columns[6].text.strip()
             days = columns[7].text.strip()
             times = columns[8].text.strip()
-            instructor = columns[9].text.strip()
+            instructor = columns[9].text
+            email_link_tag = columns[9].find('a')
+            if email_link_tag and email_link_tag.has_attr('href'):
+                instructorEmail = email_link_tag['href']
+                instructorEmail = instructorEmail.replace("mailto:","")
+            else:
+                instructorEmail = ""
+            print((instructorEmail))
             location = columns[10].text.strip()
             dates = columns[11].text.strip()
             open_seats = int(float(columns[12].text.strip()))
@@ -94,6 +102,7 @@ class SJSUScraper:
                 days=days,
                 times=times,
                 instructor=instructor,
+                instructorEmail = instructorEmail,
                 location=location,
                 dates=dates,
                 open_seats=open_seats,
